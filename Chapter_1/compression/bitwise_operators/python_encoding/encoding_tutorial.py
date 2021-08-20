@@ -188,4 +188,4 @@ unicodedata.name("€")
 
 unicodedata.lookup("EURO SIGN")
 
-nicodedata.name("🐍")
+unicodedata.name("🐍")

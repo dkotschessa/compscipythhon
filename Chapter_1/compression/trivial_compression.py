@@ -19,7 +19,7 @@ class CompressedGene:
                 raise ValueError("Invalid Nucleotide:{}".format(nucleotide))
 
     def decompress(self) -> str:
-        gene: string = ""
+        gene: str = ""
         for i in range(0, self.bit_string.bit_length() -1, 2):# -1 sentinel
             bits: int = self.bit_string >> i & 0b11 # get just 2 relevant bits
             if bits == 0b00:    # A

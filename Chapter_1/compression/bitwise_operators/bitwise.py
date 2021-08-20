@@ -162,9 +162,9 @@ Out[128]: 56
 
 # RIGHT SHIFT
 
-a = 0b10011101
-b = bin(a >> 1)
-c = bin(a >> 2)
+x: int = 0b10011101
+y: str = bin(x >> 1)
+z: str = bin(a >> 2)
 
 # shifting to the right is effectively halving
 
@@ -215,13 +215,13 @@ result = unsigned_int32(-100).value >> 1
 """
 In [6]: print(bin(result))
 0b1111111111111111111111111001110
-"""
 
-""" >> is called the signed right shift operator - maintains the sign """
+
+>> is called the signed right shift operator - maintains the sign 
 
 In [7]: num = bin(-10)
 
-"""
+
 In [14]: num = -0b01
 
 In [15]: num
@@ -232,8 +232,7 @@ Out[16]: -2
 
 In [17]: bin(num)
 Out[17]: '-0b1'
-"""
-"""
+
 Python doesn’t always store integers in plain two’s complement binary.
  Instead, it follows a custom adaptive strategy that works like sign-magnitude 
  with an unlimited number of bits. It converts numbers back and forth between their i
