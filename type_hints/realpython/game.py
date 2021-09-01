@@ -1,52 +1,84 @@
 # game.py
+from __future__ import annotations
+import sys
 
 import random
 from typing import List, Tuple, Any, Sequence, Optional
 
-SUITS = "♠ ♡ ♢ ♣".split()
-RANKS = "2 3 4 5 6 7 8 9 10 J Q K A".split()
 
-Card = Tuple[str, str]
-Deck = List[Card]
+class Card:
+    SUITS = "♠ ♡ ♢ ♣".split()
+    RANKS = "2 3 4 5 6 7 8 9 10 J Q K A".split()
 
-def create_deck(shuffle: bool = False) -> Deck:
-    """Create a new deck of 52 cards"""
-    deck = [(s, r) for r in RANKS for s in SUITS]
-    if shuffle:
-        random.shuffle(deck)
-    return deck
+    def __init__(self, suit: str, rank: str) -> None:  # always none for init
+        self.suit = suit
+        self.rank = rank
 
-def deal_hands(deck: Deck) -> Tuple[Deck, Deck, Deck, Deck]:
-    """Deal the cards in the deck into four hands"""
-    return (deck[0::4], deck[1::4], deck[2::4], deck[3::4])
+    def __repr__(self) -> str:
+        return f"{self.suit}{self.rank}"
 
-def choose(items):
-    """Choose and return a random item"""
-    return random.choice(items)
 
-def player_order(names: Sequence[str], start: Optional[str] = None) -> Sequence[str]:
-    """Rotate player order so start goes first"""
-    if start is None:
-        start = choose(names)
-    start_idx = names.index(start)
-    return names[start_idx:] + names[:start_idx]
+class Deck:
+    def __init__(self, cards: List[Card]) -> None:
+        self.cards = cards
 
-def play() -> None:
-    """play a 4 player card game"""
-    deck = create_deck(shuffle=True)
-    names = "P1 P2 P3 P4".split()
-    hands = {n: h for n, h in zip(names, deal_hands(deck))}
-    start_player = choose(names)
-    turn_order = player_order(names,start=start_player)
+    @classmethod
+    def create(cls, shuffle: bool = False) -> Deck:
+        """Create a new deck of 52 cards"""
+        cards = [Card(s, r) for r in Card.RANKS for s in Card.SUITS]
+        if shuffle:
+            random.shuffle(cards)
+        return cls(cards)
 
-    #Randomly play cards from each player's hand until empty
-    while hands[start_player]:
-        for name in turn_order:
-            card = choose(hands[name])
-            hands[name].remove(card)
-            print(f"{name}: {card[0] + card[1]:<3}  ", end = "")
-        print()
+    def deal(self, num_hands):
+        """Deal the cards in the deck into four hands"""
+        cls = self.__class__
+        return tuple(cls(self.cards[i::num_hands]) for i in range(num_hands))
+
+
+class Player:
+    def __init__(self, name: str, hand: Deck) -> None:
+        self.name = name
+        self.hand = hand
+
+    def play_card(self):
+        """Play a card from the player's hand"""
+        card = random.choice(self.hand.cards)
+        self.hand.cards.remove(card)
+        print(f"{self.name}: {card!r:<3} ", end="")
+        return card
+
+
+class Game:
+    def __init__(self, *names: str) -> None:
+        """Set up the deck and deal cards to 4 players"""
+        deck = Deck.create(shuffle=True)
+        self.names = (list(names) + "P1 P2 P3 P4".split())[:4]
+        self.hands = {n: Player(n, h) for n, h in zip(self.names, deck.deal(4))}
+
+    def play(self):
+        """Play a card game"""
+        start_player = random.choice(self.names)
+        turn_order = self.player_order(start=start_player)
+
+        # Play cards from each player's hand until empty
+        while self.hands[start_player].hand.cards:
+            for name in turn_order:
+                self.hands[name].play_card()
+            print()
+
+    def player_order(self, start=None):
+        """Rotate player order so start goes first"""
+        if start is None:
+            start = choose(names)
+        start_idx = self.names.index(start)
+        return self.names[start_idx:] + self.names[:start_idx]
 
 
 if __name__ == "__main__":
-    play()
+    # Read playernames from command line
+    player_names = sys.argv[1:]
+    game = Game(*player_names)
+    game.play()
+
+  
