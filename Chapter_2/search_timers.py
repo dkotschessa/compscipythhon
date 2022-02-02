@@ -19,3 +19,4 @@ def time_binary_contains():
     toc = time.perf_counter()
     timed = f"{toc-tic:.06f}"
     print(f'That took {timed} seconds')
+
