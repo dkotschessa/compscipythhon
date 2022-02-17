@@ -1,5 +1,6 @@
 from word_search import generate_grid, display_grid, generate_domain
 
+
 def test_grid():
     grid = generate_grid(5, 6)
     assert len(grid) == 5
@@ -11,11 +12,11 @@ def test_display_grid(capsys):
     displayed_grid = display_grid(grid)
     captured = capsys.readouterr()
     assert type(captured.out) == str
-    assert len(captured.out) == (5 + 1) * 5 # row with carriage return times columns
+    assert len(captured.out) == (5 + 1) * 5  # row with carriage return times columns
 
 
 def test_generate_domain():
-    word = 'SPAM'
+    word = "SPAM"
     rows = 5
     columns = 5
     grid = generate_grid(rows, columns)
@@ -27,6 +28,3 @@ def test_generate_domain():
     assert test_domain[2].column == 2
     assert test_domain[3].column == 3
     assert test_domain[4].column == 4
-
-
-
